@@ -126,6 +126,7 @@ const signin_user = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Validate input fields
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -133,48 +134,50 @@ const signin_user = async (req, res) => {
       });
     }
 
-    // Assume User is a Mongoose model
+    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
-        message: "User not found",
+        message: "Invalid email or password",
       });
     }
 
-    // Validate password
+    // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
-        message: "Invalid password",
+        message: "Invalid email or password",
       });
     }
 
     // Generate JWT token
     const tokenData = { _id: user._id, email: user.email };
-    const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });
+    const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" }); // Replace "siddh123" with a secure secret
 
-    // Set cookie with the token
-    const tokenOption = {
-      httpOnly: false, // For security
-      secure: false, // HTTPS required in production (set true for HTTPS)
+    // Set cookie options
+    const tokenOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Enable secure cookies in production
       sameSite: "None", // Allow cross-origin cookies
     };
 
-    res.cookie("token", token, tokenOption).json({
+    // Send response with token
+    res.cookie("token", token, tokenOptions).json({
       success: true,
       message: "Login successful",
-      data: token,
     });
   } catch (error) {
-    console.error("Internal server error:", error);
+    console.error("Error during login:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
     });
   }
 };
+
+
 
 
 
