@@ -71,62 +71,10 @@ const create_user = async (req, res) => {
 
 
 
-// const  signin_user = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-
-//     if (!email || !password) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Please provide email and password",
-//       });
-//     }
-
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "User not found",
-//       });
-//     }
-
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-//     if (!isPasswordValid) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid password",
-//       });
-//     }
-
-//     const tokenData = { _id: user._id, email: user.email };
-//     const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });  
-
-//     const tokenoption = {
-//       httpOnly: true, // For security, prevents JS from accessing the cookie
-//       secure: process.env.NODE_ENV === "production", // Set to true in production (HTTPS only)
-//       sameSite: "None", // Required for cross-origin cookies
-//     };
-
-//     res.cookie("token", token,tokenoption).json({
-//       success: true,
-//       message: "Login successful",
-//       data:token
-//     });
-//   } catch (error) {
-//     console.error("Internal server error:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Internal server error",
-//     });
-//   }
-// };
-
-
-const signin_user = async (req, res) => {
+const  signin_user = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validate input fields
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -134,51 +82,44 @@ const signin_user = async (req, res) => {
       });
     }
 
-    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
-        message: "Invalid email or password",
+        message: "User not found",
       });
     }
 
-    // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
-        message: "Invalid email or password",
+        message: "Invalid password",
       });
     }
 
-    // Generate JWT token
     const tokenData = { _id: user._id, email: user.email };
-    const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" }); // Replace "siddh123" with a secure secret
+    const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });  
 
-    // Set cookie options
-    const tokenOptions = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Enable secure cookies in production
-      sameSite: "None", // Allow cross-origin cookies
+    const tokenoption = {
+      httpOnly: true, // For security, prevents JS from accessing the cookie
+      secure: process.env.NODE_ENV === "production", // Set to true in production (HTTPS only)
+      sameSite: "None", // Required for cross-origin cookies
     };
 
-    // Send response with token
-    res.cookie("token", token, tokenOptions).json({
+    res.cookie("token", token,tokenoption).json({
       success: true,
       message: "Login successful",
+      data:token
     });
   } catch (error) {
-    console.error("Error during login:", error);
+    console.error("Internal server error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
     });
   }
 };
-
-
-
 
 
 const user_detail = async(req, res) => { 
