@@ -157,7 +157,7 @@ const signin_user = async (req, res) => {
 
     // Set cookie with the token
     const tokenOption = {
-      httpOnly: true, // For security
+      httpOnly: false, // For security
       secure: false, // HTTPS required in production (set true for HTTPS)
       sameSite: "None", // Allow cross-origin cookies
     };
