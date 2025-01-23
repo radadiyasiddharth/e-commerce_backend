@@ -48,28 +48,17 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-const allowedOrigins = ["http://localhost:3000", "https://yourfrontenddomain.com"];
-app.use(
-    cors({
-        origin: (origin, callback) => {
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error("Not allowed by CORS"));
-            }
-        },
-        credentials: true,
-    })
-);
+// Allow all origins
+app.use(cors({
+    origin: "*", // Allows all origins
+    credentials: true, // Allow cookies to be sent (ignored when origin is "*")
+}));
 
+// Set headers to allow all origins
 app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader("Access-Control-Allow-Origin", origin);
-    }
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
     next();
 });
 
