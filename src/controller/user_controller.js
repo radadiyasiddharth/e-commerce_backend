@@ -31,43 +31,43 @@ const create_user = async (req, res) => {
   }
 };
 
-// const signin_user = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     if (!email || !password) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "Please provide email and password" });
-//     }
+const signin_user = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Please provide email and password" });
+    }
 
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "User not found" });
-//     }
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found" });
+    }
 
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-//     if (!isPasswordValid) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid password",
-//       });
-//     }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid password",
+      });
+    }
 
-//     const tokenData = { _id: user._id, email: user.email };
-//     const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });
+    const tokenData = { _id: user._id, email: user.email };
+    const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });
 
-//     res
-//       .cookie("token", token, {
-//         httpOnly: true,
-//         secure: true,
-//       })
-//       .json({ success: true, message: "Login successful", data: token });
-//   } catch (error) {
-//     res.status(400).json({ success: false, message: error.message });
-//   }
-// };
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+      })
+      .json({ success: true, message: "Login successful", data: token });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
 
 
 
