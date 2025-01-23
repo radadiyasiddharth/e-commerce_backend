@@ -48,18 +48,17 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// Allow all origins
 app.use(cors({
-    origin: "*", // Allows all origins
-    credentials: true, // Allow cookies to be sent (ignored when origin is "*")
+  origin: "*", // Replace with your frontend URL
+  credentials: true, // Allow cookies to be sent
 }));
 
-// Set headers to allow all origins
 app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    next();
+  res.setHeader("Access-Control-Allow-Origin", "http://yourfrontenddomain.com"); // Match your frontend URL
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true"); // Allow credentials
+  next();
 });
 
 const port = process.env.PORT || 5500;
