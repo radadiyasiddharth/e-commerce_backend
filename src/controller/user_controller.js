@@ -101,10 +101,11 @@ const  signin_user = async (req, res) => {
     const tokenData = { _id: user._id, email: user.email };
     const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });  
 
-    // const tokenoption = {
-    //   httpOnly: true,
-    //   secure: true,
-    // }
+    const tokenoption = {
+      httpOnly: true, // For security, prevents JS from accessing the cookie
+      secure: process.env.NODE_ENV === "production", // Set to true in production (HTTPS only)
+      sameSite: "None", // Required for cross-origin cookies
+    };
 
     res.cookie("token", token,tokenoption).json({
       success: true,
