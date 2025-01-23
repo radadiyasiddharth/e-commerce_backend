@@ -101,10 +101,10 @@ const  signin_user = async (req, res) => {
     const tokenData = { _id: user._id, email: user.email };
     const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });  
 
-    const tokenoption = {
-      httpOnly: true,
-      secure: true,
-    }
+    // const tokenoption = {
+    //   httpOnly: true,
+    //   secure: true,
+    // }
 
     res.cookie("token", token,tokenoption).json({
       success: true,
