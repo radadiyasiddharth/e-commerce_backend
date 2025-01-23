@@ -50,13 +50,13 @@ app.use(cookieParser());
 
 // Configure CORS to allow only your frontend
 app.use(cors({
-  origin: "https://e-commerce-fronted.onrender.com", // Replace with your frontend URL
+  origin: "*", // Replace with your frontend URL
   credentials: true, // Allow cookies to be sent
 }));
 
 // Handle preflight requests globally
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://e-commerce-fronted.onrender.com"); // Frontend URL
+  res.setHeader("Access-Control-Allow-Origin", "*"); // Frontend URL
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true"); // Allow cookies
