@@ -77,27 +77,25 @@ const signin_user = async (req, res) => {
 
   try {
     // Find the user in the database
-    const user = await User.findOne({ email });
-    if (!user) {
+    const loginUser = await User.findOne({ email });
+    if (!loginUser) {
       return res.status(401).json({ success: false, message: "Invalid email or password." });
     }
 
     // Verify the password
-    const isPasswordValid = await user.comparePassword(password); // Assuming `comparePassword` is a method in your User model
+    const isPasswordValid = await loginUser.comparePassword(password); // Assuming `comparePassword` is a method in your User model
     if (!isPasswordValid) {
       return res.status(401).json({ success: false, message: "Invalid email or password." });
     }
 
-    // Generate a token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-
-    // Set the token as an HTTP-only cookie
-    res.cookie("token", token, {
+   const tokenData = { _id: loginUser._id, email: loginUser.email, role: loginUser.role };
+    const token = jwt.sign(tokenData, "siddh123", { expiresIn: "5h" });
+    console.log(token);
+    res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      sameSite: "None",
+      secure: true,
+      sameSite: 'None',
     });
-
     // Respond with success
     res.status(200).json({
       success: true,
