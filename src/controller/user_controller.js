@@ -59,10 +59,9 @@ const signin_user = async (req, res) => {
     const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });
 
   res.cookie("token", token, {
-  httpOnly: true,
-  secure: false, // Set to true in production for HTTPS
-  sameSite: "none", // Required for cross-origin cookies
-  maxAge: 8 * 60 * 60 * 1000, // 8 hours
+   httpOnly: true, // Prevent JavaScript access to the cookie
+  secure: true,   // Use HTTPS
+  sameSite: "None", // Allow cross-origin
 }).json({ success: true, message: "Login successful", data: token });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
