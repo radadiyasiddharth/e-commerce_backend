@@ -48,20 +48,22 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      callback(null, origin || "*"); // Allow all origins
-    },
-    credentials: true, // Enable cookies
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const allowedOrigins = [
+  "*"
+]
+const corsOptions = {
+  origin:function(origin,callback){
+    if(allowedOrigins.indexOf(origin) !== -1 || !origin){
+      callback(null,true);
+    }else{
+      callback(new Error('Not AllowBy CORS'))
+    }
+  }
+}
+app.use(cors(corsOptions))
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
