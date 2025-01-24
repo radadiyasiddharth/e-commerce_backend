@@ -49,29 +49,26 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 
-// CORS Configuration
-const allowedOrigins = ["http://localhost:3000"]; // Replace with your frontend URL
+const allowedOrigins = ["https://e-commerce-fronted.onrender.com/"]; // Add your frontend URL here
 app.use(
   cors({
     origin: allowedOrigins,
-    credentials: true,
+    credentials: true, // Allow cookies to be sent
   })
 );
 
-// Custom Middleware to Handle Headers
+// Optional: Custom middleware for dynamic CORS headers
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });
+
 
 // Database Connection
 DBconnection();
