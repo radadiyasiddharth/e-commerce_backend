@@ -31,43 +31,84 @@ const create_user = async (req, res) => {
   }
 };
 
-const signin_user = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Please provide email and password" });
-    }
+// const signin_user = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//     if (!email || !password) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Please provide email and password" });
+//     }
 
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "User not found" });
+//     }
+
+//     const isPasswordValid = await bcrypt.compare(password, user.password);
+//     if (!isPasswordValid) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid password",
+//       });
+//     }
+
+//     const tokenData = { _id: user._id, email: user.email };
+//     const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });
+
+//   res.cookie("token", token, {
+//    httpOnly: true, // Prevent JavaScript access to the cookie
+//   secure: true,   // Use HTTPS
+//   sameSite: "None", // Allow cross-origin
+// }).json({ success: true, message: "Login successful", data: token });
+//   } catch (error) {
+//     res.status(400).json({ success: false, message: error.message });
+//   }
+// };
+
+const signin_user = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ success: false, message: "All fields are required." });
+  }
+
+  try {
+    // Find the user in the database
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "User not found" });
+      return res.status(401).json({ success: false, message: "Invalid email or password." });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // Verify the password
+    const isPasswordValid = await user.comparePassword(password); // Assuming `comparePassword` is a method in your User model
     if (!isPasswordValid) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid password",
-      });
+      return res.status(401).json({ success: false, message: "Invalid email or password." });
     }
 
-    const tokenData = { _id: user._id, email: user.email };
-    const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });
+    // Generate a token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
-  res.cookie("token", token, {
-   httpOnly: true, // Prevent JavaScript access to the cookie
-  secure: true,   // Use HTTPS
-  sameSite: "None", // Allow cross-origin
-}).json({ success: true, message: "Login successful", data: token });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    // Set the token as an HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      sameSite: "None",
+    });
+
+    // Respond with success
+    res.status(200).json({
+      success: true,
+      message: "Logged in successfully.",
+      user: { id: user._id, email: user.email }, // Optionally return user details
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error." });
   }
 };
-
 
 
 
