@@ -52,7 +52,7 @@ app.use(cookieParser());
 const allowedOrigins = ["https://e-commerce-fronted.onrender.com","*"]; // Add your frontend URL here
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: "*",
     credentials: true, // Allow cookies to be sent
   })
 );
