@@ -31,8 +31,55 @@ const create_user = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
+=======
+// const signin_user = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//     if (!email || !password) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Please provide email and password" });
+//     }
+
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "User not found" });
+//     }
+
+//     const isPasswordValid = await bcrypt.compare(password, user.password);
+//     if (!isPasswordValid) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid password",
+//       });
+//     }
+
+//     const tokenData = { _id: user._id, email: user.email };
+//     const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });
+
+//   res.cookie("token", token, {
+//    httpOnly: true, // Prevent JavaScript access to the cookie
+//   secure: true,   // Use HTTPS
+//   sameSite: "None", // Allow cross-origin
+// }).json({ success: true, message: "Login successful", data: token });
+//   } catch (error) {
+//     res.status(400).json({ success: false, message: error.message });
+//   }
+// };
+
+>>>>>>> 2030d2a4e5eff536356722d99693a539d756c4c7
 const signin_user = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ success: false, message: "All fields are required." });
+  }
+
   try {
+<<<<<<< HEAD
     const { email, password } = req.body;
     console.log("first...", email, password)
     if (!email || !password) {
@@ -49,13 +96,21 @@ const signin_user = async (req, res) => {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid password",
-      });
+=======
+    // Find the user in the database
+    const loginUser = await User.findOne({ email });
+    if (!loginUser) {
+      return res.status(401).json({ success: false, message: "Invalid email or password." });
     }
 
+    // Verify the password
+    const isPasswordValid = await loginUser.comparePassword(password); // Assuming `comparePassword` is a method in your User model
+>>>>>>> 2030d2a4e5eff536356722d99693a539d756c4c7
+    if (!isPasswordValid) {
+      return res.status(401).json({ success: false, message: "Invalid email or password." });
+    }
+
+<<<<<<< HEAD
     const tokenData = { _id: user._id, email: user.email };
     const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });
 
@@ -67,11 +122,36 @@ const signin_user = async (req, res) => {
       .json({ success: true, message: "Login successful", data: token });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
+=======
+   const tokenData = { _id: loginUser._id, email: loginUser.email, role: loginUser.role };
+    const token = jwt.sign(tokenData, "siddh123", { expiresIn: "5h" });
+    console.log(token);
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+    });
+    // Respond with success
+    res.status(200).json({
+      success: true,
+      message: "Logged in successfully.",
+      user: { id: user._id, email: user.email }, // Optionally return user details
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error." });
+>>>>>>> 2030d2a4e5eff536356722d99693a539d756c4c7
   }
 };
 
 
+<<<<<<< HEAD
 const user_detail = async (req, res) => {
+=======
+
+
+const user_detail = async(req, res) => { 
+>>>>>>> 2030d2a4e5eff536356722d99693a539d756c4c7
   try {
 
     const user = await User.findById(req.userId)
