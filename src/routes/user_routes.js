@@ -13,12 +13,13 @@ router.post(
 )
 router.post(
     "/signin",
-    authToken,
+
     user_Controller.signin_user
 )
 router.get(
     "/user_detail",
-    authToken,user_Controller.user_detail
+    authToken,
+    user_Controller.user_detail
 )
 router.get(
     "/logout",

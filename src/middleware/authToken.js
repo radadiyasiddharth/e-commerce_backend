@@ -8,7 +8,7 @@ const authToken = (req, res, next) => {
       if (!token) {
         return res.status(401).json({
           success: false,
-          message: "Please Login",
+          // message: "Please Login",
         });
       }
   

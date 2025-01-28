@@ -1,6 +1,6 @@
 const { user_Services } = require("../services");
 const bcrypt = require("bcrypt");
-const jwt  = require("jsonwebtoken")
+const jwt = require("jsonwebtoken")
 const { User } = require("../models");
 
 
@@ -31,118 +31,23 @@ const create_user = async (req, res) => {
   }
 };
 
-// const signin_user = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     if (!email || !password) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "Please provide email and password" });
-//     }
-
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "User not found" });
-//     }
-
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-//     if (!isPasswordValid) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid password",
-//       });
-//     }
-
-//     const tokenData = { _id: user._id, email: user.email };
-//     const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });
-
-//     res
-//       .cookie("token", token, {
-//         httpOnly: true,
-//         secure: true,
-//       })
-//       .json({ success: true, message: "Login successful", data: token });
-//   } catch (error) {
-//     res.status(400).json({ success: false, message: error.message });
-//   }
-// };
-
-
-
-// const  signin_user = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-
-//     if (!email || !password) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Please provide email and password",
-//       });
-//     }
-
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "User not found",
-//       });
-//     }
-
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-//     if (!isPasswordValid) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid password",
-//       });
-//     }
-
-//     const tokenData = { _id: user._id, email: user.email };
-//     const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });  
-
-//     const tokenoption = {
-//       httpOnly: true, // For security, prevents JS from accessing the cookie
-//       secure: process.env.NODE_ENV === "production", // Set to true in production (HTTPS only)
-//       sameSite: "None", // Required for cross-origin cookies
-//     };
-
-//     res.cookie("token", token,tokenoption).json({
-//       success: true,
-//       message: "Login successful",
-//       data:token
-//     });
-//   } catch (error) {
-//     console.error("Internal server error:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Internal server error",
-//     });
-//   }
-// };
-
-
 const signin_user = async (req, res) => {
   try {
     const { email, password } = req.body;
-
+    console.log("first...", email, password)
     if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide email and password",
-      });
+      return res
+        .status(400)
+        .json({ success: false, message: "Please provide email and password" });
     }
 
-    // Assume User is a Mongoose model
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "User not found",
-      });
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found" });
     }
 
-    // Validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(400).json({
@@ -151,42 +56,30 @@ const signin_user = async (req, res) => {
       });
     }
 
-    // Generate JWT token
     const tokenData = { _id: user._id, email: user.email };
     const token = jwt.sign(tokenData, "siddh123", { expiresIn: "8h" });
 
-    // Set cookie with the token
-    const tokenOption = {
-      httpOnly: true, // For security
-      secure: false, // HTTPS required in production (set true for HTTPS)
-      sameSite: "None", // Allow cross-origin cookies
-    };
-
-    res.cookie("token", token, tokenOption).json({
-      success: true,
-      message: "Login successful",
-      data: token,
-    });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+      })
+      .json({ success: true, message: "Login successful", data: token });
   } catch (error) {
-    console.error("Internal server error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
 
-
-const user_detail = async(req, res) => { 
+const user_detail = async (req, res) => {
   try {
-   
-      const user = await User.findById(req.userId)
-      console.log(user)
-      res.status(200).json({
-        success:true,
-        data:user
-      })
+
+    const user = await User.findById(req.userId)
+    console.log(user)
+    res.status(200).json({
+      success: true,
+      data: user
+    })
   } catch (error) {
     console.error("Internal server error:", error); // Log the actual error for debugging
     res.status(500).json({

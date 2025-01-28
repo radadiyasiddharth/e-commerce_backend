@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.post(
     "/create_product",
-    authToken,
+    // authToken,
     product_Controller.uploadProduct
 )
 
@@ -19,7 +19,7 @@ router.get(
 
 router.post(
     "/update_product",
-    authToken,
+    // authToken,
     product_Controller.updateProduct
 ),
 router.get(
