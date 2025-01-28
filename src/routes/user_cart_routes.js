@@ -6,27 +6,27 @@ const router = express.Router()
 
 router.post(
     "/addtocartproduct",
-    // authToken,
+    authToken,
     user_Cart_Controller.addToCart
 ),
 router.post(
     "/countaddtocartproduct",
-    // authToken,
+    authToken,
     user_Cart_Controller.countAddToCartProduct
 )
 router.get(
     "/addtocartviewproduct",
-    // authToken,
+    authToken,
     user_Cart_Controller.addToCartViewProduct
 ),
 router.post(
     "/updateAddToCartProduct",
-    // authToken,
+    authToken,
     user_Cart_Controller.updateAddToCartProduct
 ),
 router.post(
     "/deleteAddToCartProduct",
-    // authToken,
+    authToken,
     user_Cart_Controller.deleteAddToCartProduct
 )
 
